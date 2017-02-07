@@ -1,3 +1,4 @@
+'use strict';
 var config          = require("./config");
 var firebase        = require('./firebaseDatabase');
 var util            = require('util');
@@ -27,7 +28,6 @@ var Jackpot = module.exports = function() {
 util.inherits(Jackpot, EventEmitter);
 
 Jackpot.prototype.stats = function() {
-    'use strict';
     let stats = [];
     for (let i = 0; i < this.rooms.length; i++) {
         let room = this.rooms[i];
