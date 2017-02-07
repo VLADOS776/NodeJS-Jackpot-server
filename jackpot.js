@@ -14,14 +14,18 @@ var port = process.env.PORT || 8020;
 
 server.listen(port, () => console.log(`Listening on ${ port }`));
 
-app.use((req,res) =>  {
+app.use((req,res, next) =>  {
     var allowed = /^(https?)?(:\/\/vlados|.*?localhost|.*?192\.168\.1\.205|:\/\/.*?\/vlados.*?)/ig;
     var origin = req.headers.origin;
     if (allowed.test(origin))
         res.setHeader("Access-Control-Allow-Origin", origin);
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header("Access-Control-Allow-Credentials", "true");
-    res.end('Jackpot server for Open Case Simulator');
+    next();
+})
+
+app.get('/', (req, res) => {
+    res.send('Jackpot server');
 })
 
 for (let i = 0; i < config.diff.length; i++)
