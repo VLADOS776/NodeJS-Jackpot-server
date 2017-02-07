@@ -9,6 +9,7 @@ var Jackpot         = require("./libs/jackpot");
 
 var Game = new Jackpot();
 
+io.set('origins', '*:*');
 var port = process.env.PORT || 8020;
 
 server.listen(port, () => console.log(`Listening on ${ port }`));
