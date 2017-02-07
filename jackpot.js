@@ -15,7 +15,7 @@ var port = process.env.PORT || 8020;
 server.listen(port, () => console.log(`Listening on ${ port }`));
 
 app.use((req,res) =>  {
-    var allowed = /^(https?)?(:\/\/vlados.*?\/|.*?localhost|.*?192\.168\.1\.205|:\/\/.*?\/vlados.*?)/;
+    var allowed = /^(https?)?(:\/\/vlados|.*?localhost|.*?192\.168\.1\.205|:\/\/.*?\/vlados.*?)/ig;
     var origin = req.headers.origin;
     if (allowed.test(origin))
         res.setHeader("Access-Control-Allow-Origin", origin);
