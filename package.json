@@ -4,9 +4,10 @@
   "description": "",
   "main": "jackpot.js",
   "engine": {
-    "node": "^6.1.0" 
+    "node": "^6.1.0"
   },
   "dependencies": {
+    "cors": "^2.8.1",
     "express": "^4.14.0",
     "firebase": "^3.6.4",
     "request": "^2.79.0",
