@@ -1,0 +1,18 @@
+{
+  "name": "jackpot-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "jackpot.js",
+  "dependencies": {
+    "express": "^4.14.0",
+    "firebase": "^3.6.4",
+    "request": "^2.79.0",
+    "socket.io": "^1.7.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "VLADOS776",
+  "license": "ISC"
+}
