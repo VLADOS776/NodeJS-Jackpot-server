@@ -3,7 +3,6 @@ var express = new require('express');
 var app     = express();
 var server  = require('http').Server(app);
 var io      = require('socket.io')(server);
-var cors    = require('cors');
 
 var config          = require("./libs/config");
 var Jackpot         = require("./libs/jackpot");
@@ -15,14 +14,9 @@ var port = process.env.PORT || 8020;
 
 server.listen(port, () => console.log(`Listening on ${ port }`));
 
-var CorsOpt = {
-    origin: /https?:\/\/.*vlados.*?\//
-}
-
-app.use(cors(CorsOpt));
 app.use((req,res) =>  {
-    //res.header("Access-Control-Allow-Origin", "*");
-    //res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Origin", "^(https?:\/\/.*?vlados.*?\/)");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.end('Jackpot server for Open Case Simulator');
 })
 
