@@ -13,7 +13,11 @@ var port = process.env.PORT || 8020;
 
 server.listen(port, () => console.log(`Listening on ${ port }`));
 
-app.use((req,res) => res.end('Jackpot server for Open Case Simulator'));
+app.use((req,res) =>  {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.end('Jackpot server for Open Case Simulator');
+})
 
 for (let i = 0; i < config.diff.length; i++)
     Game.newRoom(i);
