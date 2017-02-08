@@ -83,7 +83,7 @@ Jackpot.prototype.enterRoom = function(playerID, room) {
             playerBet += this.rooms[room].bets[i].weapons.length;
     }
     
-    return {
+    var returnObj = {
         players: this.rooms[room].players,
         bets: this.rooms[room].bets,
         gameStart: this.rooms[room].gameStart,
@@ -92,6 +92,11 @@ Jackpot.prototype.enterRoom = function(playerID, room) {
         limits: this.rooms[room].limits,
         playerBet: playerBet
     }
+    
+    if (this.winner != null)
+        returnObj.winner = this.winner
+    
+    return returnObj
 }
 
 Jackpot.prototype.deletePlayer = function(id) {
@@ -133,6 +138,9 @@ var JackpotRoom = function(diff) {
     
     //Всего предметов
     this.totalItems = 0;
+    
+    //Победитель
+    this.winner = null;
     
     //Отсчет до старта
     this.startInTimeout = null;
@@ -216,6 +224,7 @@ JackpotRoom.prototype.newGame = function() {
     this.players = {};
     this.totalItems = 0;
     this.totalMoney = 0;
+    this.winner = null;
     
     this.emit('new_game', this.diff);
 }
@@ -246,6 +255,13 @@ JackpotRoom.prototype.start = function() {
         return all.concat(current.weapons)
     }, [])
     console.log('all Weapons', allWeapons);
+    
+    this.winner = {
+        avatar: winner.avatar,
+        nickname: winner.nick,
+        chance: chances,
+        ticket: ticket
+    }
     
     var msg = {
         all: {

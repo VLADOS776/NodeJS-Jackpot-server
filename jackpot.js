@@ -50,8 +50,8 @@ Game.on('countdown_start', function(event) {
 })
 
 Game.on('winner', function(event) {
-    io.in(event.room).emit('winner', event.all);
     io.to(event.winnerID).emit('you_win', event.winner)
+    io.in(event.room).emit('winner', event.all);
 })
 
 Game.on('new_game', function(event) {
@@ -68,6 +68,7 @@ io.on('connection', function(socket) {
     socket.emit('stats', roomsPreview);
 
     socket.on('enterRoom', function(roomID){
+        if (roomID < 0) return;
         let result = Game.enterRoom(socket.id.toString(), roomID);
         socket.join(roomID);
         socket.leave('select_room');
@@ -76,6 +77,10 @@ io.on('connection', function(socket) {
         socket.emit('roomInfo', result);
         socket.emit('chances', Game.rooms[roomID].chances());
     });
+    
+    socket.on('chat', function(event) {
+        io.emit('chat', event);
+    })
     
     socket.on('leaveRoom', function(room) {
         if (typeof room == 'object' && typeof room.room != 'undefined' && room.room == 'all') {
