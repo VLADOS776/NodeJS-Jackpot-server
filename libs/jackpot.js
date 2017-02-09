@@ -216,6 +216,23 @@ JackpotRoom.prototype.bet = function(bet, playerID) {
     return bet;
 }
 
+JackpotRoom.prototype.itemsBack = function(playerID) {
+    if (Object.keys(this.players).length > 1 || typeof this.players[playerID] == 'undefined')
+        return false
+        
+    console.log(`Игрок ${playerID} забирает свою ставку`);
+    
+    var weapons = [];
+    for (var i = 0; i < this.bets.length; i++) {
+        if (this.bets[i].playerid == playerID) {
+            weapons = weapons.concat(this.bets[i].weapons);
+        }
+    }
+    this.newGame();
+    
+    return weapons.length >= 1 ? weapons : false;
+}
+
 JackpotRoom.prototype.newGame = function() {
     console.log('Новая игра');
     this.gameStart = false;
@@ -249,14 +266,24 @@ JackpotRoom.prototype.start = function() {
     
     var winner = this.getWinner();
     
-    if (typeof winner == 'undefined')
-        winner = this.getWinner();
     
-    var ticket = Math.rand(winner.tickets.from, winner.tickets.to);
-    var chances = this.players[winner.playerid].chance;
-    var allWeapons = this.bets.reduce(function(all, current) {
-        return all.concat(current.weapons)
-    }, [])
+    if (typeof winner == 'undefined')
+        for (var i = i; i < 5; i++) {
+            winner = this.getWinner();
+            if (typeof winner != 'undefined') break;
+        }
+    if (typeof winner == 'undefined')
+        winner = this.bets[0];
+    
+    try {
+        var ticket = Math.rand(winner.tickets.from, winner.tickets.to);
+        var chances = this.players[winner.playerid].chance;
+        var allWeapons = this.bets.reduce(function(all, current) {
+            return all.concat(current.weapons)
+        }, [])
+    } catch (e) {
+        this.newGame();
+    }
     console.log('all Weapons', allWeapons);
     
     this.winner = {

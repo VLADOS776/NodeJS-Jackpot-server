@@ -82,6 +82,7 @@ io.on('connection', function(socket) {
         io.emit('chat', event);
     })
     
+    
     socket.on('leaveRoom', function(room) {
         if (typeof room == 'object' && typeof room.room != 'undefined' && room.room == 'all') {
             for(var room in socket.rooms) {
@@ -102,6 +103,14 @@ io.on('connection', function(socket) {
         
         io.in(bet.room).emit('bet',Game.rooms[bet.room].bet(bet, socket.id));
         io.in(bet.room).emit('chances', Game.rooms[bet.room].chances());
+    })
+    
+    socket.on('items back', function(room) {
+        var result = Game.rooms[room].itemsBack(socket.id);
+        
+        if (result) {
+            socket.emit('items back', result);
+        }
     })
 
     socket.on('disconnect', function(){
