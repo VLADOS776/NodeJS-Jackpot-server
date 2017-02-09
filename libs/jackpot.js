@@ -93,8 +93,8 @@ Jackpot.prototype.enterRoom = function(playerID, room) {
         playerBet: playerBet
     }
     
-    if (this.winner != null)
-        returnObj.winner = this.winner
+    if (this.rooms[room].winner != null)
+        returnObj.winner = this.rooms[room].winner
     
     return returnObj
 }
@@ -220,6 +220,7 @@ JackpotRoom.prototype.newGame = function() {
     console.log('Новая игра');
     this.gameStart = false;
     this.lastTicket = 1;
+    this.gameStartIn = 0;
     this.bets = [];
     this.players = {};
     this.totalItems = 0;
@@ -245,9 +246,11 @@ JackpotRoom.prototype.chances = function() {
 JackpotRoom.prototype.start = function() {
     this.gameStart = true;
     this.startInTimeout = null;
-    this.gameStartIn = 0;
     
     var winner = this.getWinner();
+    
+    if (typeof winner == 'undefined')
+        winner = this.getWinner();
     
     var ticket = Math.rand(winner.tickets.from, winner.tickets.to);
     var chances = this.players[winner.playerid].chance;

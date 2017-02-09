@@ -85,7 +85,8 @@ io.on('connection', function(socket) {
     socket.on('leaveRoom', function(room) {
         if (typeof room == 'object' && typeof room.room != 'undefined' && room.room == 'all') {
             for(var room in socket.rooms) {
-                socket.leave(room);
+                if (room != socket.id)
+                    socket.leave(room);
             }
             socket.join('select_room');
             console.log(`Игрок ${socket.id} вышел из всех комнат`);
