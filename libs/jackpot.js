@@ -4,6 +4,9 @@ var firebase        = require('./firebaseDatabase');
 var util            = require('util');
 var EventEmitter    = require('events').EventEmitter;
 var Prices          = require('./prices');
+var log4js          = require('log4js');
+
+var logger = log4js.getLogger();
 
 var tickTimeout = 0,
     raiseInterval = 0;
@@ -43,7 +46,7 @@ Jackpot.prototype.stats = function() {
 
 Jackpot.prototype.newRoom = function(diff) {
     if (!config.diff[diff]) {
-        console.log(`Нет такой сложности "${diff}"`);
+        logger.error(`Нет такой сложности "${diff}"`);
         return false;
     }
     
@@ -64,16 +67,16 @@ Jackpot.prototype.newRoom = function(diff) {
     })
     
     this.rooms.push(newRoom);
-    console.log(`Создана комната ${diff}`);
+    logger.info(`Создана комната ${diff}`);
 }
 
 Jackpot.prototype.enterRoom = function(playerID, room) {
     if (!this.rooms[room]) {
-        console.log(`Вход в несуществующую комнату ${room}`);
+        logger.error(`Вход в несуществующую комнату ${room}`);
         return {};
     }
     
-    console.log(`Игрок ${playerID} вошел в комнату ${room}`);
+    logger.info(`Игрок ${playerID} вошел в комнату ${room}`);
     
     //this.rooms[room].players[playerID] = true;
     
@@ -162,9 +165,9 @@ JackpotRoom.prototype.bet = function(bet, playerID) {
     
     for (var i = 0; i < weapons.length; i++) {
         var price = Prices.getPrice(weapons[i]);
-        console.log(`Цена $${price} на предмет ${weapons[i].item_id}`);
+        logger.debug(`Цена $${price} на предмет ${weapons[i].item_id}`);
         if (price < this.limits.min || price > this.limits.max) {
-            console.log('Цена не подходит');
+            logger.warn('Цена не подходит');
         } else {
             bet.itemsCost += price;
             bet.weapons.push(weapons[i]);
@@ -196,7 +199,7 @@ JackpotRoom.prototype.bet = function(bet, playerID) {
     
     if (Object.keys(this.players).length > 1 && this.gameStartIn === 0 && this.gameStart === false) {
         this.gameStartIn = Date.now() + config.timeLimit;
-        console.log('Начался обратный отсчет');
+        logger.info('Начался обратный отсчет');
         this.emit('countdown_start', {time: (this.gameStartIn - Date.now()), room: this.diff});
         
         var that = this;
@@ -212,7 +215,7 @@ JackpotRoom.prototype.bet = function(bet, playerID) {
     //this.bets.push(bet)
     this.lastTicket += bet.itemsCost * 100;
 
-    console.log(`Новая ставка от ${bet.nick}`);
+    logger.info(`Новая ставка от ${bet.nick}`);
     return bet;
 }
 
@@ -220,7 +223,7 @@ JackpotRoom.prototype.itemsBack = function(playerID) {
     if (Object.keys(this.players).length > 1 || typeof this.players[playerID] == 'undefined')
         return false
         
-    console.log(`Игрок ${playerID} забирает свою ставку`);
+    logger.info(`Игрок ${playerID} забирает свою ставку`);
     
     var weapons = [];
     for (var i = 0; i < this.bets.length; i++) {
@@ -234,7 +237,7 @@ JackpotRoom.prototype.itemsBack = function(playerID) {
 }
 
 JackpotRoom.prototype.newGame = function() {
-    console.log('Новая игра');
+    logger.info('Новая игра');
     this.gameStart = false;
     this.lastTicket = 1;
     this.gameStartIn = 0;
@@ -284,7 +287,7 @@ JackpotRoom.prototype.start = function() {
     } catch (e) {
         this.newGame();
     }
-    console.log('all Weapons', allWeapons);
+    logger.debug('all Weapons', allWeapons);
     
     this.winner = {
         avatar: winner.avatar,

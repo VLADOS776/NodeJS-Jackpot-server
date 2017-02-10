@@ -3,16 +3,18 @@ var express = new require('express');
 var app     = express();
 var server  = require('http').Server(app);
 var io      = require('socket.io')(server);
+var log4js  =require('log4js');
 
-var config          = require("./libs/config");
-var Jackpot         = require("./libs/jackpot");
+var config      = require("./libs/config");
+var Jackpot     = require("./libs/jackpot");
+var logger      = log4js.getLogger();
 
 var Game = new Jackpot();
 
 io.set('origins', '*:*');
 var port = process.env.PORT || 8020;
 
-server.listen(port, () => console.log(`Listening on ${ port }`));
+server.listen(port, () => logger.info(`Listening on ${ port }`));
 
 app.use((req,res, next) =>  {
     var allowed = /^(https?)?(:\/\/vlados|.*?localhost|.*?192\.168\.1\.205|:\/\/.*?\/vlados.*?)/ig;
@@ -52,6 +54,8 @@ Game.on('countdown_start', function(event) {
 Game.on('winner', function(event) {
     io.to(event.winnerID).emit('you_win', event.winner)
     io.in(event.room).emit('winner', event.all);
+    
+    logger.info(`Отправляем вещи. Победитель: ${event.all.nickname} | ${event.all.chance}% (${event.winnerID})`)
 })
 
 Game.on('new_game', function(event) {
@@ -59,7 +63,7 @@ Game.on('new_game', function(event) {
 })
 
 io.on('connection', function(socket) {
-    console.log("New connection: "+socket.id);
+    logger.info("Новое подключение: "+socket.id);
     
     socket.join('select_room');
 
@@ -90,16 +94,16 @@ io.on('connection', function(socket) {
                     socket.leave(room);
             }
             socket.join('select_room');
-            console.log(`Игрок ${socket.id} вышел из всех комнат`);
+            logger.info(`Игрок ${socket.id} вышел из всех комнат`);
         } else if (typeof room == 'number') {
             socket.leave(room);
-            console.log(`Игрок ${socket.id} вышел из комнаты ${room}`);
+            logger.info(`Игрок ${socket.id} вышел из комнаты ${room}`);
         }
     })
     
     socket.on('bet', function(bet) {
-        console.log(`Игрок ${socket.id} сделал ставку`);
-        console.log(bet);
+        logger.info(`Игрок ${socket.id} сделал ставку`);
+        logger.debug(bet);
         
         io.in(bet.room).emit('bet',Game.rooms[bet.room].bet(bet, socket.id));
         io.in(bet.room).emit('chances', Game.rooms[bet.room].chances());
@@ -114,7 +118,7 @@ io.on('connection', function(socket) {
     })
 
     socket.on('disconnect', function(){
-        console.log('disconect: ' + socket.id.toString());
+        logger.info('Игрок вышел из игры ' + socket.id.toString());
 
         delete allPlayers[socket.id];
     });
