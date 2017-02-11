@@ -264,6 +264,7 @@ JackpotRoom.prototype.chances = function() {
 }
 
 JackpotRoom.prototype.start = function() {
+    if (this.gameStart) return;
     this.gameStart = true;
     this.startInTimeout = null;
     
