@@ -105,6 +105,12 @@ io.on('connection', function(socket) {
         logger.info(`Игрок ${socket.id} сделал ставку`);
         logger.debug(bet);
         
+        if (Game.rooms[bet.room].gameStart) {
+            logger.info(`Игрок ${socket.id} хотел сделать ставку, но игра уже началась. Возвращаем ему предметы`);
+            socket.emit('items back', bet.weapons);
+            return
+        }
+        
         io.in(bet.room).emit('bet',Game.rooms[bet.room].bet(bet, socket.id));
         io.in(bet.room).emit('chances', Game.rooms[bet.room].chances());
     })
