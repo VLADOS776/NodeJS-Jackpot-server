@@ -52,7 +52,13 @@ Game.on('countdown_start', function(event) {
 })
 
 Game.on('winner', function(event) {
-    io.to(event.winnerID).emit('you_win', event.winner)
+    if (typeof io.sockets.connected[event.winnerID] != 'undefined') {
+        io.sockets.connected[event.winnerID].emit('you_win', event.winner);
+        logger.debug('Отправляем победителю вещи новым способом');
+    } else {
+        io.to(event.winnerID).emit('you_win', event.winner);
+        logger.debug('Отправляем победителю вещи старым способом');
+    }
     io.in(event.room).emit('winner', event.all);
     
     logger.info(`Отправляем вещи. Победитель: ${event.all.nickname} | ${event.all.chance}% (${event.winnerID})`)

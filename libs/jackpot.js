@@ -205,10 +205,13 @@ JackpotRoom.prototype.bet = function(bet, playerID) {
         var that = this;
         this.startInTimeout = setTimeout(function() {
             that.start();
-        }, this.gameStartIn - Date.now())
+        }, (this.gameStartIn - Date.now() + config.lastBetsAppend))
     }
     
     if (this.totalItems >= this.limits.items && this.gameStart === false || this.gameStartIn < 0) {
+        clearTimeout(this.startInTimeout);
+        this.startInTimeout = null;
+        
         this.start();
     }
     

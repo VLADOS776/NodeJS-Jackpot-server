@@ -1,10 +1,10 @@
 var config = {
-    timeLimit: 10000,//60000,
+    timeLimit: 15000,//60000,
+    lastBetsAppend: 2000,
     pauseAfterGame: 14000,
     minBets: 2,
     topCount: 10,
     statsInterval: 5000,
-    
 }
 
 var diff = [{
