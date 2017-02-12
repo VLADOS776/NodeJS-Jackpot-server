@@ -134,7 +134,6 @@ io.on('connection', function(socket) {
 
         delete allPlayers[socket.id];
     });
-    
 })
 
 function clientsInRoom(room) {

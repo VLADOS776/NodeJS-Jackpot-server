@@ -157,11 +157,17 @@ JackpotRoom.prototype.bet = function(bet, playerID) {
     // TODO проверять стоимость предметов
     // Не выходит ли за лимит комнаты
     
+    if (bet.weapons.length == 0) return;
+    
     bet.playerid = playerID;
     bet.itemsCost = 0;
     
     var weapons = bet.weapons;
     bet.weapons = [];
+    
+    if (bet.weapons.length > this.limits.perPlayer) {
+        bet.weapons.slice(0, this.limits.perPlayer - 1);
+    }
     
     for (var i = 0; i < weapons.length; i++) {
         var price = Prices.getPrice(weapons[i]);
