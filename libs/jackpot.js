@@ -158,6 +158,9 @@ JackpotRoom.prototype.bet = function(bet, playerID) {
     // Не выходит ли за лимит комнаты
     
     if (bet.weapons.length == 0) return;
+    if (bet.weapons.length > this.limits.perPlayer) {
+        bet.weapons = bet.weapons.slice(0, this.limits.perPlayer - 1);
+    }
     
     bet.playerid = playerID;
     bet.itemsCost = 0;
@@ -165,9 +168,6 @@ JackpotRoom.prototype.bet = function(bet, playerID) {
     var weapons = bet.weapons;
     bet.weapons = [];
     
-    if (bet.weapons.length > this.limits.perPlayer) {
-        bet.weapons.slice(0, this.limits.perPlayer - 1);
-    }
     
     for (var i = 0; i < weapons.length; i++) {
         var price = Prices.getPrice(weapons[i]);
