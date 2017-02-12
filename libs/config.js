@@ -31,7 +31,7 @@ var diff = [{
         min: 200,
         max: 999999999,
         items: 50,
-        perPlayer: 15
+        perPlayer: 10
     }
 ]
 

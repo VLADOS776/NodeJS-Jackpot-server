@@ -171,7 +171,6 @@ JackpotRoom.prototype.bet = function(bet, playerID) {
     
     for (var i = 0; i < weapons.length; i++) {
         var price = Prices.getPrice(weapons[i]);
-        logger.debug(`Цена $${price} на предмет ${weapons[i].item_id}`);
         if (price < this.limits.min || price > this.limits.max) {
             logger.warn('Цена не подходит');
         } else {
@@ -297,7 +296,6 @@ JackpotRoom.prototype.start = function() {
     } catch (e) {
         this.newGame();
     }
-    logger.debug('all Weapons', allWeapons);
     
     this.winner = {
         avatar: winner.avatar,
