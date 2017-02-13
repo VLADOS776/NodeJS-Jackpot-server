@@ -116,9 +116,11 @@ io.on('connection', function(socket) {
             socket.emit('items back', bet.weapons);
             return
         }
-        
-        io.in(bet.room).emit('bet',Game.rooms[bet.room].bet(bet, socket.id));
-        io.in(bet.room).emit('chances', Game.rooms[bet.room].chances());
+        var result = Game.rooms[bet.room].bet(bet, socket.id);
+        if (result !== null) {
+            io.in(bet.room).emit('bet', result);
+            io.in(bet.room).emit('chances', Game.rooms[bet.room].chances());
+        }
     })
     
     socket.on('items back', function(room) {

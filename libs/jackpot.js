@@ -157,10 +157,19 @@ JackpotRoom.prototype.bet = function(bet, playerID) {
     // TODO проверять стоимость предметов
     // Не выходит ли за лимит комнаты
     
-    if (bet.weapons.length == 0) return;
+    if (bet.weapons.length == 0) return null;
     if (bet.weapons.length > this.limits.perPlayer) {
         bet.weapons = bet.weapons.slice(0, this.limits.perPlayer - 1);
     }
+    
+    var playerAlreadyBet = 0;
+    for (var i = 0; i < this.bets.length; i++) {
+        if (this.bets[i].playerid === playerID) {
+            playerAlreadyBet += this.bets[i].weapons.length;
+        }
+    }
+    
+    if (playerAlreadyBet + bet.weapons.length > this.limits.perPlayer) return null;
     
     bet.playerid = playerID;
     bet.itemsCost = 0;
