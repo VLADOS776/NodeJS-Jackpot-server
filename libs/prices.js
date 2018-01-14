@@ -6,8 +6,9 @@ var Prices = module.exports = {
     weapons: {},
     prices: {},
     init: function() {
+        var random = Math.random();
         request({
-            url: 'https://vlados776.github.io/OpenCase_Beta2/scripts/weapons.js',
+            url: 'https://vlados776.github.io/OpenCase_Beta2/scripts/weapons.js?'+random,
         }).pipe(fs.createWriteStream('temp/weapons.js'))
         .on('close', function() {
             fs.readFile('./temp/weapons.js', 'utf8', function(err, data) {
@@ -22,7 +23,7 @@ var Prices = module.exports = {
         })
         
         request({
-            url: 'https://vlados776.github.io/OpenCase_Beta2/scripts/prices.js',
+            url: 'https://vlados776.github.io/OpenCase_Beta2/scripts/prices.js?'+random,
         }).pipe(fs.createWriteStream('temp/prices.js'))
         .on('close', function() {
             fs.readFile('./temp/prices.js', 'utf8', function(err, data) {
@@ -54,7 +55,13 @@ var Prices = module.exports = {
         
         let prices = itemPrices.prices[cat][item.quality];
         if (typeof prices == 'undefined') return 0;
-        let price = prices.market > 0 ? prices.market : prices.analyst > 0 ? prices.analyst : prices.opskins > 0 ? prices.opskins : 0;
+		
+		let price;
+		if (typeof price === 'object') {
+			price = prices.market > 0 ? prices.market : prices.analyst > 0 ? prices.analyst : prices.opskins > 0 ? prices.opskins : 0;
+		} else {
+			price = prices;
+		}
         
         return price
     }
